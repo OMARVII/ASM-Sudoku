@@ -7,37 +7,38 @@ string   byte " enter Solution : ",0
 value    byte ?
 row     dword  ?
 col     dword ?
-st1     byte  "okay",0
+st1     byte  "Correct Answer",0
 incrementation  byte ?
 r byte "Enter Row :" ,0
 c1 byte "Enter Colomn :" ,0
 wrongAns byte "Wrong Answer",0
 .code
+;---------------------------------------------------------------------------------------
+;Checks the value enetered by the user wheather it fit the grid or no
+;receives the value entered by the user,the row and colomn to place the value in 
+;receives the offset of the solved suduko grid 
+;prints for every input if it is correct or no 
+;----------------------------------------------------------------------------------------
 check PROC
-COMMENT @
-mov ebx,row
-dec ebx
-mov ecx,9
-l2:
-   add ebx,ebx
-
-loop l2
-add ebx,col
-@
-add esi,30 ;; add 3l offset value el formula
-add edi,30 ;; add 3l offset value el formula
-movzx ecx,byte ptr[esi] ;; move el value el fel esi (solved) fl ecx
+mov ebx,row;;formula
+dec ebx;;formula
+mov eax,9;;formula
+MUL ebx;;formula
+mov ebx,eax;;fprmula
+add ebx,col;;formula
+;;formula=(row-1)*9+col
+add esi,ebx ;; add 3l offset value el formula
+add edi,ebx ;; add 3l offset value el formula
+movzx ecx,byte ptr[esi-1] ;; move el value el fel esi (solved) fl ecx
+mov eax,ecx
+call writedec
 cmp value,cl ;; compare el fel ecx bel enetered value (law equal zero flag hykon b one
 jnz l1 ;; jump if xero flag=zero
 mov edx,offset st1 ;; move offset string okay
-mov eax,2
-call SetTextColor
 call writestring ;; write okay 
 RET
 l1: mov edx,offset wrongAns;; law msh zy ba3d hygy hena ( el mafrood cout wrong answer )
-    mov eax,4
-call SetTextColor
-	call writestring
+    call writestring
 RET
 check ENDP ;; end function
 main PROC
@@ -56,10 +57,7 @@ main PROC
    mov esi,offset solved ;;move offset of arrays
    mov edi ,offset unsolved
    call check ;; proc call
-
-
-    call dumpregs
+ call dumpregs
 	exit
-main ENDP
-
-END main
+ main ENDP
+ END main
