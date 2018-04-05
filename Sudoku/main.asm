@@ -1,8 +1,13 @@
 
 INCLUDE Irvine32.inc
 .data
-unsolved byte 5,3,0,0,7,0,0,0,0,6,0,0,1,9,5,0,0,0,0,9,8,0,0,0,0,6,0,8,0,0,0,6,0,0,0,3,4,0,0,8,0,3,0,0,1,7,0,0
-solved   byte 5,3,4,6,7,8,9,1,2,6,7,2,1,9,5,3,4,8,1,9,8,3,4,2,5,6,7,8,5,9,7,6,1,4,2,3,4,2,6,8,5,3,7,9,1,7,1,3
+arr_size = 7777
+unsolvedfile BYTE "files\omarunsolved.txt",0
+solvedfile BYTE "files\omarsolved.txt",0
+arr BYTE arr_size DUP(?)
+arr2 BYTE arr_size DUP(?)
+unsolved BYTE arr_size DUP(?)
+solved BYTE arr_size DUP(?)
 string   byte " enter Solution : ",0
 value    byte ?
 row     dword  ?
@@ -31,8 +36,9 @@ add esi,ebx ;; add 3l offset value el formula
 add edi,ebx ;; add 3l offset value el formula
 movzx ecx,byte ptr[esi-1] ;; move el value el fel esi (solved) fl ecx
 mov eax,ecx
-call writedec
-cmp value,cl ;; compare el fel ecx bel enetered value (law equal zero flag hykon b one
+sub eax,'0'
+;;call writedec
+cmp value,al;; compare el fel ecx bel enetered value (law equal zero flag hykon b one
 jnz l1 ;; jump if xero flag=zero
 mov edx,offset st1 ;; move offset string okay
 call writestring ;; write okay 
@@ -42,9 +48,77 @@ l1: mov edx,offset wrongAns;; law msh zy ba3d hygy hena ( el mafrood cout wrong 
 RET
 check ENDP ;; end function
 main PROC
-   mov edx , offset string ;;count enter number
+
+	; unsolved file
+    mov edx,OFFSET unsolvedfile
+	call OpenInputFile
+
+	mov edx,OFFSET arr
+	mov ecx,arr_size
+	call ReadFromFile
+
+
+	mov esi,offset unsolved
+	mov edx, offset arr
+
+	mov ecx, 9
+
+	l1:
+
+	mov ebx , ecx ;save ecx
+	mov ecx, 9
+
+	l2:
+	movzx edi ,byte ptr[edx]
+	mov [esi],edi
+	inc edx
+	inc esi 
+
+	loop l2
+	mov ecx,ebx
+	inc edx
+	inc edx
+
+	loop l1
+	; unsolved file 
+
+	;solved file 
+
+	mov edx,OFFSET solvedfile
+	call OpenInputFile
+
+	mov edx,OFFSET arr2
+	mov ecx,arr_size
+	call ReadFromFile
+
+	mov esi,offset solved
+	mov edx, offset arr2
+	mov ecx, 9
+
+	l3:
+
+	mov ebx , ecx ;save ecx
+	mov ecx, 9
+
+	l4:
+	movzx edi ,byte ptr[edx]
+	mov [esi],edi
+	inc edx
+	inc esi 
+
+	loop l4
+	mov ecx,ebx
+	inc edx
+	inc edx
+
+	loop l3
+	; solved file
+	;;mov edx , offset solved
+	;;call WriteString       
+	;;call crlf
+	 mov edx , offset string ;;count enter number
    call writestring
-   call readdec ;; fel acx 3ndi el value entered
+   call readdec;; fel acx 3ndi el value entered
    mov value ,al
    mov edx,offset r
    call writestring ;;cout enter row
@@ -57,7 +131,8 @@ main PROC
    mov esi,offset solved ;;move offset of arrays
    mov edi ,offset unsolved
    call check ;; proc call
- call dumpregs
+
 	exit
- main ENDP
- END main
+main ENDP
+
+END main
