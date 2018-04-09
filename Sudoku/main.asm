@@ -2,10 +2,14 @@
 INCLUDE Irvine32.inc
 .data
 arr_size = 7777 ;;initial array size
-unsolvedfile BYTE "files\omarunsolved.txt",0 ;;unsolved file path
-solvedfile BYTE "files\omarsolved.txt",0;;solved file path
+unsolvedfile BYTE "Boards\diff_1_1.txt ",0 ;;unsolved file path
+solvedfile BYTE "Boards\diff_1_1_solved.txt ",0;;solved file path
+EnterDiff BYTE "Enter difficulty level: ",0
+EnterBoard BYTE "Choose board from 1 to 3: ",0
 arr BYTE arr_size DUP(?)
 arr2 BYTE arr_size DUP(?)
+diffchoice byte 0
+boardchoice byte 0
 unsolved BYTE arr_size DUP(?) ;;unsolved array shaghakleen 3alih
 currentgrid byte arr_size dup(?);;current grid array shaghaleen 3alih 
 solved BYTE arr_size DUP(?);;solved grid array shaghaleen 3alih
@@ -28,6 +32,29 @@ line  byte "-------|-----|-----|",0 ;; print line delimiters
 vertical byte"|",0 ; print vertical delimiter
 .code
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;FILL CURRENT GRID;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+ReadDiffandBoard proc
+mov esi,offset solvedfile
+mov ebx,offset unsolvedfile 
+mov edx, offset EnterDiff
+call writestring
+
+call readchar
+mov diffchoice,al
+mov [esi+12],al
+mov [ebx+12],al
+
+call crlf
+mov edx, offset EnterBoard
+call writestring
+
+call readchar
+mov boardchoice,al
+mov [esi+14],al
+mov [ebx+14],al
+call crlf
+ret
+ReadDiffandBoard endp
+
 readunsolvedtocurrent PROC
  mov edx,OFFSET unsolvedfile
 	call OpenInputFile
@@ -297,6 +324,9 @@ RET
 check ENDP ;; end function
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 main PROC
+
+call ReadDiffandBoard
+
 ;; call func readarray
    pushad
    call READARRAY
